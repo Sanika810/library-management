@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Librarian Dashboard')}"></head>
+<body>
+<th:block th:replace="~{fragments/layout :: nav}"></th:block>
+<div class="container py-4">
+  <h3 class="mb-3">Librarian Dashboard</h3>
+  <div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="card"><div class="card-body"><div class="text-muted small">Book titles</div>
+      <div class="fs-4" th:text="${bookCount}">0</div></div></div></div>
+    <div class="col-md-4"><div class="card"><div class="card-body"><div class="text-muted small">Members</div>
+      <div class="fs-4" th:text="${memberCount}">0</div></div></div></div>
+    <div class="col-md-4"><div class="card"><div class="card-body"><div class="text-muted small">Active loans</div>
+      <div class="fs-4" th:text="${activeLoans}">0</div></div></div></div>
+  </div>
+  <h5>Fees</h5>
+  <div th:replace="~{fragments/layout :: feeStats(${stats})}"></div>
+  <a class="btn btn-outline-primary" th:href="@{/librarian/fee-dashboard}">Fee dashboard</a>
+  <a class="btn btn-outline-primary" th:href="@{/librarian/fines}">All fines</a>
+</div>
+</body>
+</html>

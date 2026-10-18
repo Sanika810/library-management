@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('My Fines')}"></head>
+<body>
+<th:block th:replace="~{fragments/layout :: nav}"></th:block>
+<div class="container py-4">
+  <h3 class="mb-3">My Fines</h3>
+  <div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted small">Total fine (original)</div>
+      <div class="fs-4" th:text="'₹' + ${#numbers.formatDecimal(totalOriginal, 1, 2)}"></div></div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted small">Waived by librarian</div>
+      <div class="fs-4" th:text="'₹' + ${#numbers.formatDecimal(totalAdjusted, 1, 2)}"></div></div></div></div>
+    <div class="col-md-3"><div class="card border-success"><div class="card-body"><div class="text-muted small">Amount paid</div>
+      <div class="fs-4 text-success" th:text="'₹' + ${#numbers.formatDecimal(totalPaid, 1, 2)}"></div></div></div></div>
+    <div class="col-md-3"><div class="card border-danger"><div class="card-body"><div class="text-muted small">Outstanding balance</div>
+      <div class="fs-4 text-danger" th:text="'₹' + ${#numbers.formatDecimal(totalOutstanding, 1, 2)}"></div></div></div></div>
+  </div>
+  <table class="table table-striped align-middle">
+    <thead><tr><th>Book</th><th>Due</th><th>Returned</th><th>Days late</th><th>Rate/day</th>
+      <th>Original</th><th>Waived</th><th>Paid</th><th>Outstanding</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="v : ${fines}">
+        <td th:text="${v.fine.borrowRecord.book.title}"></td>
+        <td th:text="${v.fine.borrowRecord.dueDate}"></td>
+        <td th:text="${v.fine.borrowRecord.returnDate}"></td>
+        <td th:text="${v.fine.overdueDays}"></td>
+        <td th:text="'₹' + ${#numbers.formatDecimal(v.fine.ratePerDay, 1, 2)}"></td>
+        <td th:text="'₹' + ${#numbers.formatDecimal(v.fine.amount, 1, 2)}"></td>
+        <td th:text="'₹' + ${#numbers.formatDecimal(v.adjusted, 1, 2)}"></td>
+        <td th:text="'₹' + ${#numbers.formatDecimal(v.paid, 1, 2)}"></td>
+        <td class="fw-bold" th:text="'₹' + ${#numbers.formatDecimal(v.outstanding, 1, 2)}"></td>
+        <td><span th:replace="~{fragments/layout :: fineBadge(${v.fine.status})}"></span></td>
+        <td><a class="btn btn-sm btn-primary" th:if="${v.outstanding.signum() > 0}"
+               th:href="@{/user/fines/{id}/pay(id=${v.fine.id})}">Pay</a></td>
+      </tr>
+      <tr th:if="${fines.isEmpty()}"><td colspan="11" class="text-center text-muted">You have no fines.</td></tr>
+    </tbody>
+  </table>
+  <a th:href="@{/user/payments}" class="btn btn-outline-secondary">Payment history</a>
+</div>
+</body>
+</html>

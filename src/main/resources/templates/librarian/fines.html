@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Fines')}"></head>
+<body>
+<th:block th:replace="~{fragments/layout :: nav}"></th:block>
+<div class="container py-4">
+  <h3 class="mb-3">All Fines</h3>
+  <form class="row g-2 mb-3" method="get" th:action="@{/librarian/fines}">
+    <div class="col-md-5"><input class="form-control" name="q" th:value="${q}" placeholder="Search by user, book title or borrow record #"></div>
+    <div class="col-md-3">
+      <select class="form-select" name="status">
+        <option value="">All statuses</option>
+        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == status}"></option>
+      </select></div>
+    <div class="col-auto"><button class="btn btn-secondary" type="submit">Filter</button></div>
+  </form>
+  <table class="table table-striped align-middle">
+    <thead><tr><th>Fine</th><th>Record</th><th>User</th><th>Book</th><th>Days late</th>
+      <th>Original</th><th>Waived</th><th>Paid</th><th>Outstanding</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="v : ${fines}">
+        <td th:text="${v.fine.id}"></td>
+        <td th:text="${v.fine.borrowRecord.id}"></td>
+        <td th:text="${v.fine.borrowRecord.user.name} + ' (' + ${v.fine.borrowRecord.user.email} + ')'"></td>
+        <td th:text="${v.fine.borrowRecord.book.title}"></td>
+        <td th:text="${v.fine.overdueDays}"></td>
+        <td th:text="'₹' + ${#numbers.formatDecimal(v.fine.amount, 1, 2)}"></td>
+        <td th:text="'₹' + ${#numbers.formatDecimal(v.adjusted, 1, 2)}"></td>
+        <td th:text="'₹' + ${#numbers.formatDecimal(v.paid, 1, 2)}"></td>
+        <td class="fw-bold" th:text="'₹' + ${#numbers.formatDecimal(v.outstanding, 1, 2)}"></td>
+        <td><span th:replace="~{fragments/layout :: fineBadge(${v.fine.status})}"></span></td>
+        <td><a class="btn btn-sm btn-outline-primary" th:href="@{/librarian/fines/{id}/adjust(id=${v.fine.id})}">Adjust / waive</a></td>
+      </tr>
+      <tr th:if="${fines.isEmpty()}"><td colspan="11" class="text-center text-muted">No fines found.</td></tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

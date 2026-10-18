@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Payment Result')}"></head>
+<body>
+<th:block th:replace="~{fragments/layout :: nav}"></th:block>
+<div class="container py-4" style="max-width: 640px;">
+  <h3 class="mb-3">Payment Result</h3>
+  <div class="alert alert-success" th:if="${payment.status.name() == 'SUCCESS'}">
+    Simulated payment successful. Your outstanding balance has been updated.
+  </div>
+  <div class="alert alert-danger" th:if="${payment.status.name() == 'FAILED'}">
+    Simulated payment failed. Your outstanding balance is unchanged. You can try again.
+  </div>
+  <div class="alert alert-secondary" th:if="${payment.status.name() == 'PENDING'}">Payment is pending.</div>
+  <table class="table">
+    <tr><th>Book</th><td th:text="${payment.fine.borrowRecord.book.title}"></td></tr>
+    <tr><th>Amount</th><td th:text="'₹' + ${#numbers.formatDecimal(payment.amount, 1, 2)}"></td></tr>
+    <tr><th>Method (simulated)</th><td th:text="${payment.method}"></td></tr>
+    <tr><th>Status</th><td><span th:replace="~{fragments/layout :: payBadge(${payment.status})}"></span></td></tr>
+    <tr><th>Transaction reference</th><td th:text="${payment.transactionReference} ?: '-'"></td></tr>
+    <tr><th>Date</th><td th:text="${#temporals.format(payment.createdAt, 'dd MMM yyyy HH:mm')}"></td></tr>
+  </table>
+  <a class="btn btn-primary" th:href="@{/user/fines}">Back to my fines</a>
+  <a class="btn btn-outline-secondary" th:href="@{/user/payments}">Payment history</a>
+</div>
+</body>
+</html>

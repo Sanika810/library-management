@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Payments')}"></head>
+<body>
+<th:block th:replace="~{fragments/layout :: nav}"></th:block>
+<div class="container py-4">
+  <h3 class="mb-3">Payment Records</h3>
+  <form class="row g-2 mb-3" method="get" th:action="@{/librarian/payments}">
+    <div class="col-md-3">
+      <select class="form-select" name="status">
+        <option value="">All statuses</option>
+        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == status}"></option>
+      </select></div>
+    <div class="col-auto"><button class="btn btn-secondary" type="submit">Filter</button></div>
+  </form>
+  <table class="table table-striped align-middle">
+    <thead><tr><th>Date</th><th>User</th><th>Book</th><th>Fine</th><th>Amount</th><th>Method</th><th>Status</th><th>Reference</th></tr></thead>
+    <tbody>
+      <tr th:each="p : ${payments}">
+        <td th:text="${#temporals.format(p.createdAt, 'dd MMM yyyy HH:mm')}"></td>
+        <td th:text="${p.fine.borrowRecord.user.email}"></td>
+        <td th:text="${p.fine.borrowRecord.book.title}"></td>
+        <td th:text="${p.fine.id}"></td>
+        <td th:text="'₹' + ${#numbers.formatDecimal(p.amount, 1, 2)}"></td>
+        <td th:text="${p.method}"></td>
+        <td><span th:replace="~{fragments/layout :: payBadge(${p.status})}"></span></td>
+        <td th:text="${p.transactionReference} ?: '-'"></td>
+      </tr>
+      <tr th:if="${payments.isEmpty()}"><td colspan="8" class="text-center text-muted">No payments found.</td></tr>
+    </tbody>
+  </table>
+  <p class="text-muted small">Only SUCCESS payments count as collected. FAILED and PENDING attempts are kept for audit.</p>
+</div>
+</body>
+</html>

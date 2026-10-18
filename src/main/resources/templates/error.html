@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Error')}"></head>
+<body>
+<th:block th:replace="~{fragments/layout :: nav}"></th:block>
+<div class="container py-4">
+  <div class="alert alert-danger">
+    <h4 class="alert-heading">Something went wrong <span th:if="${status}" th:text="'(' + ${status} + ')'"></span></h4>
+    <p class="mb-0" th:text="${message} ?: 'The requested page could not be processed.'">Message</p>
+  </div>
+  <a class="btn btn-secondary" th:href="@{/dashboard}">Back to dashboard</a>
+</div>
+</body>
+</html>

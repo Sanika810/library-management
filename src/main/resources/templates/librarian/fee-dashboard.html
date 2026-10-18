@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Fee Dashboard')}"></head>
+<body>
+<th:block th:replace="~{fragments/layout :: nav}"></th:block>
+<div class="container py-4">
+  <h3 class="mb-3">Fee Dashboard</h3>
+  <div th:replace="~{fragments/layout :: feeStats(${stats})}"></div>
+  <div class="card" style="max-width: 460px;"><div class="card-body">
+    <h5 class="card-title">Fine rate per overdue day</h5>
+    <p class="text-muted small">Applies to books returned after the change. Existing fines keep the rate they were created with.</p>
+    <form th:action="@{/librarian/fines/rate}" method="post" class="d-flex gap-2">
+      <input class="form-control" type="number" step="0.01" min="0.01" name="ratePerDay" th:value="${rate}" required>
+      <button class="btn btn-primary" type="submit">Update</button>
+    </form>
+  </div></div>
+</div>
+</body>
+</html>

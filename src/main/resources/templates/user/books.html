@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Catalog')}"></head>
+<body>
+<th:block th:replace="~{fragments/layout :: nav}"></th:block>
+<div class="container py-4">
+  <h3 class="mb-3">Book Catalog</h3>
+  <form class="row g-2 mb-3" method="get" th:action="@{/user/books}">
+    <div class="col-md-6"><input class="form-control" name="q" th:value="${q}" placeholder="Search title, author or ISBN"></div>
+    <div class="col-auto"><button class="btn btn-secondary" type="submit">Search</button></div>
+  </form>
+  <table class="table table-striped align-middle">
+    <thead><tr><th>Title</th><th>Author</th><th>Category</th><th>ISBN</th><th>Available</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="b : ${books}">
+        <td th:text="${b.title}"></td><td th:text="${b.author}"></td>
+        <td th:text="${b.category} ?: '-'"></td><td th:text="${b.isbn}"></td>
+        <td th:text="${b.availableCopies} + ' / ' + ${b.totalCopies}"></td>
+        <td>
+          <form th:action="@{/user/borrow/{id}(id=${b.id})}" method="post">
+            <button class="btn btn-sm btn-primary" type="submit" th:disabled="${b.availableCopies == 0}">Borrow</button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${books.isEmpty()}"><td colspan="6" class="text-center text-muted">No books found.</td></tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

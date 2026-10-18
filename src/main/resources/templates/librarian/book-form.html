@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Book')}"></head>
+<body>
+<th:block th:replace="~{fragments/layout :: nav}"></th:block>
+<div class="container py-4" style="max-width: 560px;">
+  <h3 class="mb-3" th:text="${form.id == null} ? 'Add Book' : 'Edit Book'">Book</h3>
+  <form th:action="@{/librarian/books}" th:object="${form}" method="post">
+    <div class="alert alert-danger" th:if="${#fields.hasGlobalErrors()}" th:each="e : ${#fields.globalErrors()}" th:text="${e}"></div>
+    <input type="hidden" th:field="*{id}">
+    <div class="mb-3"><label class="form-label">ISBN</label>
+      <input class="form-control" th:field="*{isbn}" th:classappend="${#fields.hasErrors('isbn')} ? 'is-invalid'">
+      <div class="invalid-feedback" th:errors="*{isbn}"></div></div>
+    <div class="mb-3"><label class="form-label">Title</label>
+      <input class="form-control" th:field="*{title}" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'">
+      <div class="invalid-feedback" th:errors="*{title}"></div></div>
+    <div class="mb-3"><label class="form-label">Author</label>
+      <input class="form-control" th:field="*{author}" th:classappend="${#fields.hasErrors('author')} ? 'is-invalid'">
+      <div class="invalid-feedback" th:errors="*{author}"></div></div>
+    <div class="mb-3"><label class="form-label">Category</label>
+      <input class="form-control" th:field="*{category}"></div>
+    <div class="mb-3"><label class="form-label">Total copies</label>
+      <input class="form-control" type="number" min="1" th:field="*{totalCopies}" th:classappend="${#fields.hasErrors('totalCopies')} ? 'is-invalid'">
+      <div class="invalid-feedback" th:errors="*{totalCopies}"></div></div>
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-link" th:href="@{/librarian/books}">Cancel</a>
+  </form>
+</div>
+</body>
+</html>

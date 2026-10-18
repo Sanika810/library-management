@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Borrowings')}"></head>
+<body>
+<th:block th:replace="~{fragments/layout :: nav}"></th:block>
+<div class="container py-4">
+  <h3 class="mb-3">All Borrowings</h3>
+  <table class="table table-striped align-middle">
+    <thead><tr><th>#</th><th>Member</th><th>Book</th><th>Borrowed</th><th>Due</th><th>Returned</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr th:each="r : ${records}">
+        <td th:text="${r.id}"></td>
+        <td th:text="${r.user.name} + ' (' + ${r.user.email} + ')'"></td>
+        <td th:text="${r.book.title}"></td>
+        <td th:text="${r.borrowDate}"></td><td th:text="${r.dueDate}"></td>
+        <td th:text="${r.returnDate} ?: '-'"></td>
+        <td>
+          <span class="badge bg-success" th:if="${r.status.name() == 'RETURNED'}">RETURNED</span>
+          <span class="badge bg-danger" th:if="${r.status.name() == 'BORROWED' and r.dueDate.isBefore(today)}">OVERDUE</span>
+          <span class="badge bg-primary" th:if="${r.status.name() == 'BORROWED' and !r.dueDate.isBefore(today)}">BORROWED</span>
+        </td>
+      </tr>
+      <tr th:if="${records.isEmpty()}"><td colspan="7" class="text-center text-muted">No borrowings yet.</td></tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
